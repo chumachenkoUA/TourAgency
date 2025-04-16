@@ -6,7 +6,7 @@ namespace TourAgency
 {
     public static class FileHandler
     {
-        private const string FileName = "tours.bin";
+        private const string FileName = "/home/kirito/RiderProjects/TourAgency/TourAgency/tours.bin";
 
         public static void WriteTours(List<Tour> tours)
         {

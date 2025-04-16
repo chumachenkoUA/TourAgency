@@ -64,3 +64,4 @@
 /home/kirito/RiderProjects/TourAgency/TourAgency/obj/Debug/net9.0/TourAgency.csproj.Up2Date
 /home/kirito/RiderProjects/TourAgency/TourAgency/obj/Debug/net9.0/TourAgency.genruntimeconfig.cache
 /home/kirito/RiderProjects/TourAgency/TourAgency/obj/Debug/net9.0/ref/TourAgency.dll
+/home/kirito/RiderProjects/TourAgency/TourAgency/obj/Debug/net9.0/TourAgency.sourcelink.json
