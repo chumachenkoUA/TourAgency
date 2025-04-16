@@ -16,7 +16,7 @@ namespace TourAgency
         public MainWindow()
         {
             InitializeComponent();
-            ToursDataGrid.ItemsSource = _tours; // Прив'язуємо один раз!
+            ToursDataGrid.ItemsSource = _tours;
             ShowAllTours();
         }
 
@@ -25,23 +25,31 @@ namespace TourAgency
         {
             try
             {
-                if (DaysInput.Text != null && TourNameInput.Text != null && CountryInput.Text != null && DepartureDateInput.SelectedDate != null && CostInput.Text != null)
+                // Перевірка на заповненість усіх полів
+                if (string.IsNullOrWhiteSpace(TourNameInput.Text) ||
+                    string.IsNullOrWhiteSpace(CountryInput.Text) ||
+                    DepartureDateInput.SelectedDate == null ||
+                    string.IsNullOrWhiteSpace(DaysInput.Text) ||
+                    string.IsNullOrWhiteSpace(CostInput.Text))
                 {
-                    var tour = new Tour
-                    {
-                        TourName = TourNameInput.Text,
-                        Country = CountryInput.Text,
-                        DepartureDate = DepartureDateInput.SelectedDate?.DateTime ?? DateTime.Now,
-                        NumberOfDays = int.Parse(DaysInput.Text),
-                        Cost = decimal.Parse(CostInput.Text),
-                        HasNightTransfers = NightTransfersInput.IsChecked ?? false
-                    };
-
-                    _tours.Add(tour);
-
-                    // Зберігаємо у файл усі тури
-                    FileHandler.WriteTours(_tours.ToList());
+                    MessageBox("Будь ласка, заповніть усі поля перед додаванням туру!");
+                    return;
                 }
+
+                var tour = new Tour
+                {
+                    TourName = TourNameInput.Text,
+                    Country = CountryInput.Text,
+                    DepartureDate = DepartureDateInput.SelectedDate?.DateTime ?? DateTime.Now,
+                    NumberOfDays = int.Parse(DaysInput.Text),
+                    Cost = decimal.Parse(CostInput.Text),
+                    HasNightTransfers = NightTransfersInput.IsChecked ?? false
+                };
+
+                _tours.Add(tour);
+
+                // Зберігаємо у файл усі тури
+                FileHandler.WriteTours(_tours.ToList());
 
                 MessageBox("Тур успішно додано!");
                 ClearInputFields();
@@ -73,11 +81,14 @@ namespace TourAgency
         {
             try
             {
-                var filtered = FileHandler.ReadTours()
-                    .Where(t =>
-                        t.Country.Equals("Чехія", StringComparison.OrdinalIgnoreCase) &&
-                        !t.HasNightTransfers)
-                    .ToList();
+                var filtered = new List<Tour>();
+                foreach (var t in FileHandler.ReadTours())
+                {
+                    if (t.Country.Equals("Чехія", StringComparison.OrdinalIgnoreCase) && !t.HasNightTransfers)
+                    {
+                        filtered.Add(t);
+                    }
+                }
 
                 _tours.Clear();
                 foreach (var tour in filtered)
@@ -141,10 +152,15 @@ namespace TourAgency
         // Вивід турів у текстовий бокс
         private void DisplayToursInTextBox(IEnumerable<Tour> tours)
         {
-            if (this.FindControl<TextBox>("ToursTextBox") is { } tb)
+            var tb = this.FindControl<TextBox>("ToursTextBox");
+            if (tb != null)
             {
-                tb.Text = string.Join(Environment.NewLine, tours.Select(t =>
-                    $"Назва: {t.TourName}, Країна: {t.Country}, Відправлення: {t.DepartureDate:dd.MM.yyyy}, Днів: {t.NumberOfDays}, Вартість: {t.Cost}, Нічні переїзди: {(t.HasNightTransfers ? "Так" : "Ні")}"));
+                string text = "";
+                foreach (var t in tours)
+                {
+                    text += $"Назва: {t.TourName}, Країна: {t.Country}, Відправлення: {t.DepartureDate:dd.MM.yyyy}, Днів: {t.NumberOfDays}, Вартість: {t.Cost}, Нічні переїзди: {(t.HasNightTransfers ? "Так" : "Ні")}\n";
+                }
+                tb.Text = text.TrimEnd('\n');
             }
         }
     }
