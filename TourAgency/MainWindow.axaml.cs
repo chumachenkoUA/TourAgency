@@ -1,7 +1,10 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TourAgency
 {
@@ -52,6 +55,7 @@ namespace TourAgency
             {
                 _tours = FileHandler.ReadTours();
                 ToursDataGrid.ItemsSource = _tours;
+                DisplayToursInTextBox(_tours);
             }
             catch (Exception ex)
             {
@@ -69,6 +73,7 @@ namespace TourAgency
                     !t.HasNightTransfers);
 
                 ToursDataGrid.ItemsSource = filteredTours;
+                DisplayToursInTextBox(filteredTours);
             }
             catch (Exception ex)
             {
@@ -87,17 +92,50 @@ namespace TourAgency
             NightTransfersInput.IsChecked = false;
         }
 
-        // Відображення повідомлення
+        // Відображення повідомлення з кнопкою Закрити
         private void MessageBox(string message)
         {
             var msgBox = new Window
             {
-                Content = new TextBlock { Text = message, Margin = new Avalonia.Thickness(10) },
                 Width = 300,
-                Height = 150,
+                Height = 180,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
+
+            var panel = new StackPanel
+            {
+                Margin = new Thickness(10)
+            };
+
+            var text = new TextBlock
+            {
+                Text = message,
+                Margin = new Thickness(0, 0, 0, 15)
+            };
+
+            var closeButton = new Button
+            {
+                Content = "Закрити",
+                Width = 80,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            closeButton.Click += (_, __) => msgBox.Close();
+
+            panel.Children.Add(text);
+            panel.Children.Add(closeButton);
+
+            msgBox.Content = panel;
             msgBox.ShowDialog(this);
+        }
+
+        // Вивід турів у текстовий бокс
+        private void DisplayToursInTextBox(IEnumerable<Tour> tours)
+        {
+            if (this.FindControl<TextBox>("ToursTextBox") is { } tb)
+            {
+                tb.Text = string.Join(Environment.NewLine, tours.Select(t =>
+                    $"Назва: {t.TourName}, Країна: {t.Country}, Відправлення: {t.DepartureDate:dd.MM.yyyy}, Днів: {t.NumberOfDays}, Вартість: {t.Cost}, Нічні переїзди: {(t.HasNightTransfers ? "Так" : "Ні")}"));
+            }
         }
     }
 }

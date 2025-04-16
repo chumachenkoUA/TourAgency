@@ -1,45 +1,37 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
         x:Class="TourAgency.MainWindow"
-        Width="800" Height="600" Title="Туристичне агентство"
+        Width="800" Height="600"
+        Title="Tour Agency"
         RequestedThemeVariant="Light">
-    <Grid Margin="10">
-        <!-- Визначення колонок і рядків -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/> <!-- Для полів вводу -->
-            <ColumnDefinition Width="1*"/> <!-- Для кнопок -->
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Заголовок -->
-            <RowDefinition Height="Auto"/> <!-- Поля вводу і кнопки -->
-            <RowDefinition Height="*"/> <!-- Таблиця -->
-        </Grid.RowDefinitions>
-        
-        <!-- Заголовок -->
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-                   Text="Туристичне агентство" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-        
-        <!-- Поля вводу -->
-        <StackPanel Grid.Row="1" Grid.Column="0" Margin="10,0,10,0">
-            <TextBox x:Name="TourNameInput" Watermark="Назва туру" Margin="0,5"/>
-            <TextBox x:Name="CountryInput" Watermark="Країна" Margin="0,5"/>
-            <DatePicker x:Name="DepartureDateInput" Margin="0,5"/>
-            <TextBox x:Name="DaysInput" Watermark="Кількість днів" Margin="0,5"/>
-            <TextBox x:Name="CostInput" Watermark="Вартість" Margin="0,5"/>
-            <CheckBox x:Name="NightTransfersInput" Content="Нічні переїзди" Margin="0,5"/>
-        </StackPanel>
-        
-        <!-- Кнопки -->
-        <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0">
-            <Button Content="Додати тур" Width="150" Margin="0,5" Click="AddTour_Click"/>
-            <Button Content="Переглянути всі тури" Width="200" Margin="0,5" Click="ViewAllTours_Click"/>
-            <Button Content="Фільтрувати (Чехія, без нічних переїздів)" Width="300" Margin="0,5" Click="FilterTours_Click"/>
-        </StackPanel>
-        
-        <!-- Таблиця для відображення турів -->
-        <DataGrid Grid.Row="2" Grid.ColumnSpan="2" x:Name="ToursDataGrid" AutoGenerateColumns="True" Margin="0,20,0,0"/>
-    </Grid>
+  <StackPanel Margin="10" Spacing="8">
+    <TextBlock Text="Додавання нового туру" FontWeight="Bold" FontSize="18"/>
+    <StackPanel Orientation="Horizontal" Spacing="6">
+      <TextBox x:Name="TourNameInput" Width="120" Watermark="Назва туру"/>
+      <TextBox x:Name="CountryInput" Width="100" Watermark="Країна"/>
+      <DatePicker x:Name="DepartureDateInput" Width="110"/>
+      <TextBox x:Name="DaysInput" Width="55" Watermark="Днів"/>
+      <TextBox x:Name="CostInput" Width="70" Watermark="Вартість"/>
+      <CheckBox x:Name="NightTransfersInput" Content="Нічні переїзди"/>
+      <Button Content="Додати тур" Click="AddTour_Click" Width="100"/>
+    </StackPanel>
+
+    <StackPanel Orientation="Horizontal" Spacing="6">
+      <Button Content="Переглянути всі тури" Click="ViewAllTours_Click" Width="140"/>
+      <Button Content="Фільтрувати (Чехія, без нічних)" Click="FilterTours_Click" Width="170"/>
+    </StackPanel>
+
+    <TextBlock Text="Тури (таблиця)" FontWeight="Bold" Margin="0,8,0,0"/>
+    <DataGrid x:Name="ToursDataGrid" AutoGenerateColumns="True" Height="180" Margin="0,0,0,8"/>
+
+    <TextBlock Text="Тури (текстовий вигляд)" FontWeight="Bold"/>
+    <ScrollViewer Height="180" Margin="0,0,0,8" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+      <TextBox Name="ToursTextBox"
+               AcceptsReturn="True"
+               IsReadOnly="True"
+               FontFamily="Consolas"
+               FontSize="14"
+               HorizontalAlignment="Stretch"/>
+    </ScrollViewer>
+  </StackPanel>
 </Window>
