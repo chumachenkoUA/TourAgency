@@ -22,7 +22,11 @@ namespace TourAgency
         {
             try
             {
-                if (DaysInput.Text != null && TourNameInput.Text != null && CountryInput.Text != null && DepartureDateInput.SelectedDate != null && CostInput.Text != null)
+                if (!string.IsNullOrWhiteSpace(DaysInput.Text) &&
+                    !string.IsNullOrWhiteSpace(TourNameInput.Text) &&
+                    !string.IsNullOrWhiteSpace(CountryInput.Text) &&
+                    DepartureDateInput.SelectedDate != null &&
+                    !string.IsNullOrWhiteSpace(CostInput.Text))
                 {
                     var tour = new Tour
                     {
@@ -35,12 +39,18 @@ namespace TourAgency
                     };
 
                     _tours.Add(tour);
+                    FileHandler.WriteTours(_tours);
+
+                    // Оновлення таблиці після додавання
+                    ViewAllTours_Click(null, null);
+
+                    MessageBox("Тур успішно додано!");
+                    ClearInputFields();
                 }
-
-                FileHandler.WriteTours(_tours);
-
-                MessageBox("Тур успішно додано!");
-                ClearInputFields();
+                else
+                {
+                    MessageBox("Будь ласка, заповніть усі поля!");
+                }
             }
             catch (Exception ex)
             {
@@ -54,7 +64,16 @@ namespace TourAgency
             try
             {
                 _tours = FileHandler.ReadTours();
+
+                if (_tours == null || !_tours.Any())
+                {
+                    MessageBox("Список турів порожній або не вдалося завантажити дані.");
+                    return;
+                }
+
+                ToursDataGrid.ItemsSource = null;
                 ToursDataGrid.ItemsSource = _tours;
+
                 DisplayToursInTextBox(_tours);
             }
             catch (Exception ex)
@@ -72,7 +91,9 @@ namespace TourAgency
                     t.Country.Equals("Чехія", StringComparison.OrdinalIgnoreCase) &&
                     !t.HasNightTransfers);
 
+                ToursDataGrid.ItemsSource = null;
                 ToursDataGrid.ItemsSource = filteredTours;
+
                 DisplayToursInTextBox(filteredTours);
             }
             catch (Exception ex)
