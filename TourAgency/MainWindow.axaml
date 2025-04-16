@@ -1,37 +1,75 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="TourAgency.MainWindow"
-        Width="800" Height="600"
-        Title="Tour Agency"
+        Width="900" Height="700" Title="Туристичне агентство"
         RequestedThemeVariant="Light">
-  <StackPanel Margin="10" Spacing="8">
-    <TextBlock Text="Додавання нового туру" FontWeight="Bold" FontSize="18"/>
-    <StackPanel Orientation="Horizontal" Spacing="6">
-      <TextBox x:Name="TourNameInput" Width="120" Watermark="Назва туру"/>
-      <TextBox x:Name="CountryInput" Width="100" Watermark="Країна"/>
-      <DatePicker x:Name="DepartureDateInput" Width="110"/>
-      <TextBox x:Name="DaysInput" Width="55" Watermark="Днів"/>
-      <TextBox x:Name="CostInput" Width="70" Watermark="Вартість"/>
-      <CheckBox x:Name="NightTransfersInput" Content="Нічні переїзди"/>
-      <Button Content="Додати тур" Click="AddTour_Click" Width="100"/>
-    </StackPanel>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.2*"/>
+            <ColumnDefinition Width="1.2*"/>
+        </Grid.ColumnDefinitions>
 
-    <StackPanel Orientation="Horizontal" Spacing="6">
-      <Button Content="Переглянути всі тури" Click="ViewAllTours_Click" Width="140"/>
-      <Button Content="Фільтрувати (Чехія, без нічних)" Click="FilterTours_Click" Width="170"/>
-    </StackPanel>
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                   Text="Туристичне агентство" FontSize="28" FontWeight="Bold"
+                   HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
-    <TextBlock Text="Тури (таблиця)" FontWeight="Bold" Margin="0,8,0,0"/>
-    <DataGrid x:Name="ToursDataGrid" AutoGenerateColumns="True" Height="180" Margin="0,0,0,8"/>
+        <!-- Блок введення даних -->
+        <Border Grid.Row="1" Grid.Column="0" Margin="0,0,15,0" BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
+            <StackPanel Margin="12">
+                <TextBlock Text="Дані нового туру" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                <TextBox x:Name="TourNameInput" Watermark="Введіть назву туру" Margin="0,5"/>
+                <TextBox x:Name="CountryInput" Watermark="Введіть країну" Margin="0,5"/>
+                <DatePicker x:Name="DepartureDateInput"  Margin="0,5"/>
+                <TextBox x:Name="DaysInput" Watermark="Введіть кількість днів" Margin="0,5"/>
+                <TextBox x:Name="CostInput" Watermark="Введіть вартість" Margin="0,5"/>
+                <CheckBox x:Name="NightTransfersInput" Content="Нічні переїзди" Margin="0,5"/>
+            </StackPanel>
+        </Border>
 
-    <TextBlock Text="Тури (текстовий вигляд)" FontWeight="Bold"/>
-    <ScrollViewer Height="180" Margin="0,0,0,8" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-      <TextBox Name="ToursTextBox"
-               AcceptsReturn="True"
-               IsReadOnly="True"
-               FontFamily="Consolas"
-               FontSize="14"
-               HorizontalAlignment="Stretch"/>
-    </ScrollViewer>
-  </StackPanel>
+        <!-- Блок кнопок -->
+        <Border Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
+            <StackPanel Margin="12">
+                <TextBlock Text="Дії" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                <Button Content="Додати тур до списку" Click="AddTour_Click" Height="36" Margin="0,5"/>
+                <Button Content="Показати всі тури" Click="ViewAllTours_Click" Height="36" Margin="0,5"/>
+                <Button Content="Показати тури до Чехії без нічних переїздів" Click="FilterTours_Click" Height="36" Margin="0,5"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Простір між блоками -->
+        <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,20,0,20"/>
+
+        <!-- Таблиця турів -->
+        <Border Grid.Row="3" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Margin="0,0,0,10">
+            <StackPanel Margin="8">
+                <TextBlock Text="Список турів" FontWeight="Bold" FontSize="15" Margin="0,0,0,8"/>
+                <DataGrid x:Name="ToursDataGrid"
+                          AutoGenerateColumns="True"
+                          Height="170"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Текстове поле для виводу турів -->
+        <Border Grid.Row="4" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
+            <StackPanel Margin="8">
+                <TextBlock Text="Тури у текстовому вигляді" FontWeight="Bold" FontSize="15" Margin="0,0,0,8"/>
+                <ScrollViewer Height="180" Margin="0,0,0,8" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <TextBox Name="ToursTextBox"
+                             AcceptsReturn="True"
+                             IsReadOnly="True"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             HorizontalAlignment="Stretch"/>
+                </ScrollViewer>
+            </StackPanel>
+        </Border>
+    </Grid>
 </Window>
