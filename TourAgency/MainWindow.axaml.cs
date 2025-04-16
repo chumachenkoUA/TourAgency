@@ -5,28 +5,27 @@ using Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace TourAgency
 {
     public partial class MainWindow : Window
     {
-        private List<Tour> _tours = new List<Tour>();
+        private ObservableCollection<Tour> _tours = new ObservableCollection<Tour>();
 
         public MainWindow()
         {
             InitializeComponent();
+            ToursDataGrid.ItemsSource = _tours; // Прив'язуємо один раз!
+            ShowAllTours();
         }
 
-        // Додавання нового туру
+        // Додає новий тур
         private void AddTour_Click(object? sender, RoutedEventArgs e)
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(DaysInput.Text) &&
-                    !string.IsNullOrWhiteSpace(TourNameInput.Text) &&
-                    !string.IsNullOrWhiteSpace(CountryInput.Text) &&
-                    DepartureDateInput.SelectedDate != null &&
-                    !string.IsNullOrWhiteSpace(CostInput.Text))
+                if (DaysInput.Text != null && TourNameInput.Text != null && CountryInput.Text != null && DepartureDateInput.SelectedDate != null && CostInput.Text != null)
                 {
                     var tour = new Tour
                     {
@@ -39,18 +38,13 @@ namespace TourAgency
                     };
 
                     _tours.Add(tour);
-                    FileHandler.WriteTours(_tours);
 
-                    // Оновлення таблиці після додавання
-                    ViewAllTours_Click(null, null);
+                    // Зберігаємо у файл усі тури
+                    FileHandler.WriteTours(_tours.ToList());
+                }
 
-                    MessageBox("Тур успішно додано!");
-                    ClearInputFields();
-                }
-                else
-                {
-                    MessageBox("Будь ласка, заповніть усі поля!");
-                }
+                MessageBox("Тур успішно додано!");
+                ClearInputFields();
             }
             catch (Exception ex)
             {
@@ -58,43 +52,38 @@ namespace TourAgency
             }
         }
 
-        // Перегляд усіх турів
+        // Показати всі тури (оновлює список і DataGrid)
+        private void ShowAllTours()
+        {
+            _tours.Clear();
+            foreach (var tour in FileHandler.ReadTours())
+                _tours.Add(tour);
+
+            DisplayToursInTextBox(_tours);
+        }
+
+        // Кнопка "Показати всі тури"
         private void ViewAllTours_Click(object? sender, RoutedEventArgs e)
         {
-            try
-            {
-                _tours = FileHandler.ReadTours();
-
-                if (_tours == null || !_tours.Any())
-                {
-                    MessageBox("Список турів порожній або не вдалося завантажити дані.");
-                    return;
-                }
-
-                ToursDataGrid.ItemsSource = null;
-                ToursDataGrid.ItemsSource = _tours;
-
-                DisplayToursInTextBox(_tours);
-            }
-            catch (Exception ex)
-            {
-                MessageBox($"Помилка: {ex.Message}");
-            }
+            ShowAllTours();
         }
 
-        // Фільтрація турів (Чехія, без нічних переїздів)
+        // Кнопка "Показати тури до Чехії без нічних переїздів"
         private void FilterTours_Click(object? sender, RoutedEventArgs e)
         {
             try
             {
-                var filteredTours = _tours.FindAll(t =>
-                    t.Country.Equals("Чехія", StringComparison.OrdinalIgnoreCase) &&
-                    !t.HasNightTransfers);
+                var filtered = FileHandler.ReadTours()
+                    .Where(t =>
+                        t.Country.Equals("Чехія", StringComparison.OrdinalIgnoreCase) &&
+                        !t.HasNightTransfers)
+                    .ToList();
 
-                ToursDataGrid.ItemsSource = null;
-                ToursDataGrid.ItemsSource = filteredTours;
+                _tours.Clear();
+                foreach (var tour in filtered)
+                    _tours.Add(tour);
 
-                DisplayToursInTextBox(filteredTours);
+                DisplayToursInTextBox(filtered);
             }
             catch (Exception ex)
             {
