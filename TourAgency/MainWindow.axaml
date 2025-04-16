@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="TourAgency.MainWindow"
+        Width="800" Height="600" Title="Туристичне агентство"
+        RequestedThemeVariant="Light">
+    <Grid Margin="10">
+        <!-- Визначення колонок і рядків -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/> <!-- Для полів вводу -->
+            <ColumnDefinition Width="1*"/> <!-- Для кнопок -->
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Заголовок -->
+            <RowDefinition Height="Auto"/> <!-- Поля вводу і кнопки -->
+            <RowDefinition Height="*"/> <!-- Таблиця -->
+        </Grid.RowDefinitions>
+        
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                   Text="Туристичне агентство" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+        
+        <!-- Поля вводу -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="10,0,10,0">
+            <TextBox x:Name="TourNameInput" Watermark="Назва туру" Margin="0,5"/>
+            <TextBox x:Name="CountryInput" Watermark="Країна" Margin="0,5"/>
+            <DatePicker x:Name="DepartureDateInput" Margin="0,5"/>
+            <TextBox x:Name="DaysInput" Watermark="Кількість днів" Margin="0,5"/>
+            <TextBox x:Name="CostInput" Watermark="Вартість" Margin="0,5"/>
+            <CheckBox x:Name="NightTransfersInput" Content="Нічні переїзди" Margin="0,5"/>
+        </StackPanel>
+        
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0">
+            <Button Content="Додати тур" Width="150" Margin="0,5" Click="AddTour_Click"/>
+            <Button Content="Переглянути всі тури" Width="200" Margin="0,5" Click="ViewAllTours_Click"/>
+            <Button Content="Фільтрувати (Чехія, без нічних переїздів)" Width="300" Margin="0,5" Click="FilterTours_Click"/>
+        </StackPanel>
+        
+        <!-- Таблиця для відображення турів -->
+        <DataGrid Grid.Row="2" Grid.ColumnSpan="2" x:Name="ToursDataGrid" AutoGenerateColumns="True" Margin="0,20,0,0"/>
+    </Grid>
+</Window>
